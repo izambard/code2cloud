@@ -1,0 +1,95 @@
+
+# data folders
+data
+nb_data
+solar/images/*
+*.PDF
+*.csv
+*.pem
+
+node_modules
+.c9revisions
+.DS_Store
+Thumbs.db
+.idea
+
+#pycharm project
+.idea
+.cache
+.env
+
+.hg
+.hgignore
+
+#local package installed
+src
+!client/src
+
+*.pyc
+*.pyo
+*.pyd
+*.sqlite
+*.log
+.ipynb_checkpoints
+
+# C extensions
+*.so
+
+# Packages
+*.egg
+*.egg-info
+dist
+venv
+build
+eggs
+.eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+lib
+lib64
+include
+man
+__pycache__
+pycache
+
+#pytest cache
+.pytest_cache
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+
+# Translations
+*.mo
+
+
+.DS_Store
+node_modules
+/dist
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+*.png
