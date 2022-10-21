@@ -10,4 +10,4 @@ COPY . .
 
 EXPOSE 80
 
-CMD conda run --no-capture-output -n code2cloud python -m uvicorn main.api:app --port $APP_PORT --host 0.0.0.0
+CMD conda run --no-capture-output -n code2cloud python -m uvicorn main.api:app --port 80 --host 0.0.0.0
