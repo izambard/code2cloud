@@ -1,4 +1,3 @@
-
 # Specific project settings
 APP_NAME?=code2cloud
 DOCKER_FILE?=deployment/Dockerfile
@@ -9,22 +8,6 @@ TAG_NAME?=latest
 
 REST_PORT=80
 HOST=0.0.0.0
-
-# General AWS settings
-AWS_CLI=aws
-export AWS_DEFAULT_REGION=us-east-1
-
-# AWS Batch default settings (overridable from cmd line)
-AWS_BATCH_ENV?=code2cloud-alpha-env
-AWS_BATCH_QUEUE?=code2cloud-queue
-AWS_BATCH_JOB_STATUS?=RUNNING
-# To be fetch from docker repo:
-AWS_BATCH_JOB_ROLE_ARN?="arn:aws:iam::077056946545:role/batchJob"
-AWS_BATCH_JOB_DEF_NAME=$(APP_NAME)
-AWS_BATCH_JOB_DEF_VCPU?=1
-AWS_BATCH_JOB_DEF_MEM?=500
-AWS_BATCH_CONTAINER_PROPERTIES?='{"image": $(AWS_ECR_REST_IMAGE_ARN),"vcpus": $(AWS_BATCH_JOB_DEF_VCPU),"memory": $(AWS_BATCH_JOB_DEF_MEM),"command": [],"jobRoleArn": $(AWS_BATCH_JOB_ROLE_ARN),"volumes": [],"environment": [],"mountPoints": [],"ulimits": []}'
-
 
 NBR_ITER?=1000
 SEED?=50
@@ -47,16 +30,25 @@ run_api: rm
 run_job: rm
 	docker run -p $(REST_PORT):$(REST_PORT) --name $(APP_NAME) $(APP_NAME) $(JOB_CMD)	
 
-start:
-	docker start $(APP_NAME) 
-
-stop:
-	# Stoping docker container
-	docker stop $(APP_NAME)
-
 rm:
 	# Removing docker container
 	docker rm $(APP_NAME)
+
+# General AWS settings
+AWS_CLI=aws
+export AWS_DEFAULT_REGION=us-east-1
+
+# AWS Batch default settings (overridable from cmd line)
+AWS_BATCH_ENV?=code2cloud-compute-env
+AWS_BATCH_QUEUE?=code2cloud-queue
+AWS_BATCH_JOB_STATUS?=RUNNING
+# To be fetch from docker repo:
+AWS_ECR_REST_IMAGE_ARN=876999595319.dkr.ecr.us-east-1.amazonaws.com/code2cloud:latest
+AWS_BATCH_JOB_ROLE_ARN?="arn:aws:iam::876999595319:role/ecsTaskExecutionRole"
+AWS_BATCH_JOB_DEF_NAME=$(APP_NAME)-jobdef
+AWS_BATCH_JOB_DEF_VCPU?=0.25
+AWS_BATCH_JOB_DEF_MEM?=500
+AWS_BATCH_CONTAINER_PROPERTIES?='{"image": $(AWS_ECR_REST_IMAGE_ARN),"vcpus": $(AWS_BATCH_JOB_DEF_VCPU),"memory": $(AWS_BATCH_JOB_DEF_MEM),"command":  ["conda", "run", "--no-capture-output", "-n", "code2cloud", "python","-m","main.job","--nbr_iter","Ref::nbr_iter","--seed","Ref::seed"],"jobRoleArn": $(AWS_BATCH_JOB_ROLE_ARN),"volumes": [],"environment": [],"mountPoints": [],"ulimits": []}'
 
 
 batch_queue:
@@ -74,4 +66,4 @@ batch_create_job_def:
 
 batch_submit:
 	# Submitting AWS batch job
-	$(AWS_CLI) batch submit-job --job-name $(AWS_JOB_NAME) --job-queue $(AWS_BATCH_QUEUE)  --job-definition $(AWS_BATCH_JOB_DEF_NAME)  --container-overrides  '{"command": ["python","-u","./app/run.py","$(APP_NAME)"]}'
+	$(AWS_CLI) batch submit-job --job-name $(AWS_JOB_NAME) --job-queue $(AWS_BATCH_QUEUE)  --job-definition $(AWS_BATCH_JOB_DEF_NAME)  --parameters nbr_iter=$(NBR_ITER),seed=$(SEED),s3bucket=code2cloud.dev
