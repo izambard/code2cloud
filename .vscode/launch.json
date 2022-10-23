@@ -2,14 +2,13 @@
   // Use IntelliSense to learn about possible attributes.
   // Hover to view descriptions of existing attributes.
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-  // python -m main.job --nbr_iter 100 --seed 56
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Python : file",
+      "name": "Job run",
       "type": "python",
       "request": "launch",
-      "program": "${file}",
+      "module": "main.job",
       "args": [
         "--nbr_iter", 
         "10",
@@ -23,11 +22,11 @@
       }
     },
     {
-      "name": "FastAPI",
+      "name": "API run",
       "type": "python",
       "request": "launch",
       "module": "uvicorn",
-      "args": ["main.api:app"],
+      "args": ["main.api:app", "--port", "80"],
       "jinja": true,
       "justMyCode": true,
       "env": {

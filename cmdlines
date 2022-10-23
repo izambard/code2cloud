@@ -19,6 +19,20 @@ conda install -c conda-forge boto3
 conda install -c conda-forge fastapi
 conda install -c conda-forge uvicorn
 
-
 # Expo env config
 conda env export --no-builds --name code2cloud > docker_environment.yml
+
+# Build docker image with cmd line
+docker build -t code2cloud -f deployment/Dockerfile .
+
+# Build docker image with make
+make build
+
+# Run API under docker
+make run_api
+
+# Testing API 
+curl "localhost/pi/?seed=456&nbr_iter=1000"
+
+# Run job under docker with parameters
+make run_job NBR_ITER=500 SEED=123
