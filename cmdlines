@@ -25,14 +25,23 @@ conda env export --no-builds --name code2cloud > docker_environment.yml
 # Build docker image with cmd line
 docker build -t code2cloud -f deployment/Dockerfile .
 
+# Run API from cmdline without docker
+uvicorn main.api:app --port 80
+
+# Run Job from cmdline without docker
+python -m main.job --nbr_iter 100 --seed 56
+
 # Build docker image with make
 make build
 
 # Run API under docker
-make run_api
+make run_api WEB_CONCURRENCY=4
 
 # Testing API 
 curl "localhost/pi/?seed=456&nbr_iter=1000"
 
 # Run job under docker with parameters
 make run_job NBR_ITER=500 SEED=123
+
+# Summit jobs on AWS BATCH
+ make batch_submit AWS_JOB_NAME=pi_5000_42 NBR_ITER=5000 SEED=42

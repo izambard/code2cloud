@@ -8,6 +8,7 @@ TAG_NAME?=latest
 
 REST_PORT=80
 HOST=0.0.0.0
+WEB_CONCURRENCY=1
 
 NBR_ITER?=1000
 SEED?=50
@@ -25,7 +26,7 @@ build:
 	docker build -t $(APP_NAME) -f $(DOCKER_FILE) .	
 
 run_api: rm
-	docker run -p $(REST_PORT):$(REST_PORT) --name $(APP_NAME) $(APP_NAME) $(API_CMD)
+	docker run -p $(REST_PORT):$(REST_PORT) -e WEB_CONCURRENCY=$(WEB_CONCURRENCY) --name $(APP_NAME) $(APP_NAME) $(API_CMD)
 
 run_job: rm
 	docker run -p $(REST_PORT):$(REST_PORT) --name $(APP_NAME) $(APP_NAME) $(JOB_CMD)	
